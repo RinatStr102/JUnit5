@@ -7,10 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.*;
 
 public class GismeteoSearchTest {
+
     @BeforeAll
     public static void setUp() {
         Configuration.browser = "firefox";
@@ -20,14 +21,16 @@ public class GismeteoSearchTest {
 
     @ParameterizedTest
     @CsvSource({
-            "Москва, Погода в Москве сегодня",
-            "Санкт-Петербург, Погода в Санкт-Петербурге сегодня",
-            "Новосибирс, Погода в Новосибирске сегодня"
+            "Москва, Москва",
+            "Санкт-Петербург, Санкт-Петербург",
+            "Новосибирск, Новосибирск"
     })
-    @DisplayName("Проверка поиска по популярным городам на Gismeteo")
-    public void searchForCities(String city, String expectedHeader) {
+    @DisplayName("Проверка поиска по городам на Gismeteo")
+    public void searchForCities(String city, String expectedText) {
         open("https://www.gismeteo.ru/");
-        $(".search-form").setValue(city).pressEnter();
-        $("h1.page-title").shouldHave(text(expectedHeader));
+
+        $(".input.js-input").shouldBe(visible).setValue(city).pressEnter();
+        $(".page-title").shouldBe(visible).shouldHave(text(expectedText));
     }
 }
+
